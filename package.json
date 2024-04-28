@@ -1,0 +1,17 @@
+{
+  "name": "qa-engineer-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "cd frontend-app  && python -m http.server 3000",
+    "test": "npx playwright test --config='frontend-app-tests/playwright.config.js'"
+},
+  "devDependencies": {
+    "@playwright/test": "^1.43.1",
+    "@types/node": "^20.12.7"
+  }
+}
