@@ -7,7 +7,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "cd frontend-app  && python -m http.server 3000",
+    "start": "cd frontend-app  && python -m http.server 8000",
     "test": "npx playwright test --config='frontend-app-tests/playwright.config.js'"
   },
   "devDependencies": {
