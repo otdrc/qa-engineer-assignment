@@ -1,6 +1,6 @@
 node_modules/
-/test-results/
-/playwright-report/
+frontend-app-tests/test-results/
+frontend-app-tests/playwright-report/
 /blob-report/
 /playwright/.cache/
 
@@ -10,11 +10,3 @@ npm-debug.log
 # IntelliJ
 *.iml
 /.idea
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
