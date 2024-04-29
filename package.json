@@ -8,7 +8,9 @@
   "license": "ISC",
   "scripts": {
     "start": "cd frontend-app  && python -m http.server 8000",
-    "test": "npx playwright test --config='frontend-app-tests/playwright.config.js'"
+    "test": "npx playwright test --config='frontend-app-tests/playwright.config.js'",
+    "debug": "npx playwright test --ui --config='frontend-app-tests/playwright.config.js'"
+
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",

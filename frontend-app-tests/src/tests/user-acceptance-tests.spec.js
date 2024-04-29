@@ -1,26 +1,26 @@
 // @ts-check
-const { test, expect } = require('../../fixtures/question-answer-tool.fixture');
-const { generateQuestionAnswerPair, generateMultipleQuestionAnswerPairs } = require('../../helpers/test-data-generator');
-const inputFieldsValidation = require('../../test-data/input-fields-validation.json');
+const { test, expect } = require('../fixtures/question-answer-tool.fixture');
+const { generateQuestionAnswerPair, generateMultipleQuestionAnswerPairs } = require('../helpers/test-data-generator');
+const inputFieldsValidation = require('../test-data/input-fields-validation.json');
 
 test.describe('Title and Content Verification', () => {
-  test('title of the page and content titles are correctly displayed', async ({ questionAnswerTool }) => {
+  test('should display title of the page and content titles', async ({ questionAnswerTool }) => {
     await expect.soft(questionAnswerTool.pageTitle).toBeVisible();
     await expect.soft(questionAnswerTool.questionsListTitle).toBeVisible();
     await expect.soft(questionAnswerTool.createAQuestionFormTitle).toBeVisible();
   });
 
-  test('validate [Created Questions] title has a helper text', async ({ questionAnswerTool }) => {
+  test('should display [Created questions] title and its helper text', async ({ questionAnswerTool }) => {
     await expect.soft(questionAnswerTool.questionsTooltip).not.toBeVisible();
-    await questionAnswerTool.questionsListTitle.hover();
+    await questionAnswerTool.hover('Created questions');
 
     await expect.soft(questionAnswerTool.questionsTooltip).toBeVisible();
     await expect.soft(questionAnswerTool.questionsTooltip).toHaveText('Here you can find the created questions and their answers.');
   });
 
-  test('validate [Create a new question] title has a helper text', async ({ questionAnswerTool }) => {
+  test('should display [Create a new question] title and its helper text', async ({ questionAnswerTool }) => {
     await expect.soft(questionAnswerTool.createAQuestionTooltip).not.toBeVisible();
-    await questionAnswerTool.createAQuestionFormTitle.hover();
+    await questionAnswerTool.hover('Create a new question');
 
     await expect.soft(questionAnswerTool.createAQuestionTooltip).toBeVisible();
     await expect.soft(questionAnswerTool.createAQuestionTooltip).toHaveText('Here you can create new questions and their answers.');
@@ -30,7 +30,7 @@ test.describe('Title and Content Verification', () => {
 
 test.describe('List of Questions', () => {
 
-  test('validate when clicking on question, the answer is displayed', async ({ questionAnswerTool }) => {
+  test('should display answer upon clicking on question', async ({ questionAnswerTool }) => {
     const questionAnswerPair = generateQuestionAnswerPair();
 
     await questionAnswerTool.inputQuestion.fill(questionAnswerPair.question);
@@ -46,7 +46,7 @@ test.describe('List of Questions', () => {
 
   });
 
-  test('validate when clicking on other question, the relevant answer is displayed, while the previous is displayed as well', async ({ questionAnswerTool }) => {
+  test('should display relevant answer when clicking on other question, while the previous is displayed as well', async ({ questionAnswerTool }) => {
 
     const firstPair = generateQuestionAnswerPair();
     const secondPair = generateQuestionAnswerPair();
@@ -68,7 +68,7 @@ test.describe('List of Questions', () => {
 
   });
 
-  test('validate the page is still responsive after creating 100 questions', async ({ questionAnswerTool }) => {
+  test('should display relevant answer on click even with 100 questions present', async ({ questionAnswerTool }) => {
 
     const pairOf100 = generateMultipleQuestionAnswerPairs(100);
     const randomPairNumber = Math.floor(Math.random() * pairOf100.length)
@@ -91,7 +91,7 @@ test.describe('List of Questions', () => {
 
 test.describe('Create Question Functionality', () => {
 
-  test('Validate that new question is added to the bottom of the list', async ({ questionAnswerTool }) => {
+  test('should add new question at the bottom of existing list', async ({ questionAnswerTool }) => {
 
     const pairOf2 = generateMultipleQuestionAnswerPairs(2);
 
@@ -104,11 +104,21 @@ test.describe('Create Question Functionality', () => {
     await expect.soft(questionAnswerTool.question.nth(1)).toHaveText(pairOf2[1].question);
 
   });
+
+  test('should not allow to create duplicated questions', async ({ questionAnswerTool }) => {
+    const questionAnswerPair = generateQuestionAnswerPair();
+
+    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
+    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
+
+    await expect.soft(questionAnswerTool.question).toHaveCount(1);
+    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 1 question. Feel free to create your own questions!');
+  });
 });
 
 test.describe('Input Fields Validation', () => {
 
-  test('validate question and answer fields are mandatory', async ({ questionAnswerTool }) => {
+  test('should not allow empty field when adding new question or answer', async ({ questionAnswerTool }) => {
 
     const pair = generateQuestionAnswerPair();
 
@@ -130,8 +140,7 @@ test.describe('Input Fields Validation', () => {
 
   });
 
-  test('validate new question and answer can not have whitesapce only', async ({ questionAnswerTool }) => {
-
+  test('should not allow whitespace only in question or answer field when adding new question', async ({ questionAnswerTool }) => {
 
     await questionAnswerTool.add(inputFieldsValidation.whiteSpaceOnlyInput, inputFieldsValidation.whiteSpaceOnlyInput);
     await expect.soft(questionAnswerTool.inputQuestion).toBeFocused();
@@ -142,8 +151,7 @@ test.describe('Input Fields Validation', () => {
 
   });
 
-  test('validate new question and answer can be loong(like around 4k characters each)', async ({ questionAnswerTool }) => {
-
+  test('should allow 4k characters long input for a question or answer', async ({ questionAnswerTool }) => {
 
     await questionAnswerTool.add(inputFieldsValidation.long4kCharactersInput, inputFieldsValidation.long4kCharactersInput);
 
@@ -156,8 +164,7 @@ test.describe('Input Fields Validation', () => {
 
   });
 
-  test('validate question and answer can allow all ACHII characters', async ({ questionAnswerTool }) => {
-
+  test('should allow ACHII characters input for a question or answer', async ({ questionAnswerTool }) => {
 
     await questionAnswerTool.add(inputFieldsValidation.achiiCharactersInput, inputFieldsValidation.achiiCharactersInput);
 
@@ -170,8 +177,7 @@ test.describe('Input Fields Validation', () => {
 
   });
 
-  test('validate question and answer allow various Unicode 14.0 characters', async ({ questionAnswerTool }) => {
-
+  test('should allow Unicode 14.0 characters as input for a question or answer', async ({ questionAnswerTool }) => {
 
     await questionAnswerTool.add(inputFieldsValidation.unicodeSpecialCharactersInput, inputFieldsValidation.unicodeSpecialCharactersInput);
 
@@ -184,91 +190,11 @@ test.describe('Input Fields Validation', () => {
 
   });
 
-  test('validate duplicated questions could not be created', async ({ questionAnswerTool }) => {
-    await questionAnswerTool.add(inputFieldsValidation.unicodeSpecialCharactersInput, inputFieldsValidation.unicodeSpecialCharactersInput);
-    await questionAnswerTool.add(inputFieldsValidation.unicodeSpecialCharactersInput, inputFieldsValidation.unicodeSpecialCharactersInput);
-
-    await expect.soft(questionAnswerTool.question).toHaveCount(1);
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 1 question. Feel free to create your own questions!');
-  });
-
 });
-
-test.describe('Sidebar questions counter Functionality', () => {
-
-  test('validate sidebar text with no questions present', async ({ questionAnswerTool }) => {
-    await expect.soft(questionAnswerTool.noQuestionsAlert).toHaveText('No questions yet :-(');
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find no questions. Feel free to create your own questions!');
-  });
-
-  test('validate sidebar text with one question counted is present', async ({ questionAnswerTool }) => {
-
-    const questionAnswerPair = generateQuestionAnswerPair();
-
-    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
-
-    await expect.soft(questionAnswerTool.question).toHaveCount(1);
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 1 question. Feel free to create your own questions!');
-
-  });
-
-  test('validate sidebar text with 100 questions present', async ({ questionAnswerTool }) => {
-
-    const pairOf101 = generateMultipleQuestionAnswerPairs(101);
-    const randomPairNumber = Math.floor(Math.random() * pairOf101.length)
-    const randomPair = pairOf101[randomPairNumber]
-
-    // add 100 new questions on the The awesome Q/A tool one by one
-    for (let pair of pairOf101) {
-      await questionAnswerTool.add(pair.question, pair.answer)
-    }
-
-    await expect.soft(questionAnswerTool.question).toHaveCount(101);
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 101 questions. Feel free to create your own questions!');
-
-  });
-});
-
-test.describe('Remove Questions Functionality', () => {
-  test('validate page elements are updated accordingly when questions are removed', async ({ questionAnswerTool }) => {
-
-    const questionAnswerPair = generateQuestionAnswerPair();
-
-    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
-
-    await expect.soft(questionAnswerTool.question).toHaveCount(1);
-    await expect.soft(questionAnswerTool.noQuestionsAlert).not.toBeAttached();
-
-    await questionAnswerTool.removeQuestions.click();
-
-    await expect.soft(questionAnswerTool.noQuestionsAlert).toHaveText('No questions yet :-(');
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find no questions. Feel free to create your own questions!');
-    await expect.soft(questionAnswerTool.sortQuestions).not.toBeAttached();
-    await expect.soft(questionAnswerTool.removeQuestions).not.toBeAttached();
-
-  });
-
-  test('validate alert messages and corresponding elements dissapear when there is at least one question present', async ({ questionAnswerTool }) => {
-
-    const questionAnswerPair = generateQuestionAnswerPair();
-
-    await expect.soft(questionAnswerTool.noQuestionsAlert).toHaveText('No questions yet :-(');
-    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find no questions. Feel free to create your own questions!');
-    await expect.soft(questionAnswerTool.sortQuestions).not.toBeAttached();
-    await expect.soft(questionAnswerTool.removeQuestions).not.toBeAttached();
-
-    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
-
-    await expect.soft(questionAnswerTool.noQuestionsAlert).not.toBeAttached();
-    await expect.soft(questionAnswerTool.sidebarMessage).not.toHaveText('no questions');
-    await expect.soft(questionAnswerTool.sortQuestions).toBeEnabled();
-    await expect.soft(questionAnswerTool.removeQuestions).toBeEnabled();
-  })
-})
 
 test.describe('Sort Questions Functionality', () => {
 
-  test('validate questions are sorted in ascending order', async ({ questionAnswerTool }) => {
+  test('should sort questions in ascending order', async ({ questionAnswerTool }) => {
 
     const pairOf8 = generateMultipleQuestionAnswerPairs(8);
     const questionsInAscOrder = pairOf8.map(pair => pair.question).sort();
@@ -281,7 +207,7 @@ test.describe('Sort Questions Functionality', () => {
     expect.soft(await questionAnswerTool.question.allTextContents()).toStrictEqual(questionsInAscOrder)
   })
 
-  test('validate answers visibility after sorting questions', async ({ questionAnswerTool }) => {
+  test('should keep expanded answers visibility after sorting questions', async ({ questionAnswerTool }) => {
 
     const pairOf7 = generateMultipleQuestionAnswerPairs(7);
     const randomPairNumber = Math.floor(Math.random() * pairOf7.length)
@@ -301,4 +227,74 @@ test.describe('Sort Questions Functionality', () => {
     await expect.soft(questionAnswerTool.answer.nth(randomPairNumber)).toBeVisible();
     await expect.soft(questionAnswerTool.answer.nth(randomPairNumber)).toHaveText(randomPair.answer);
   })
-})  
+})
+
+test.describe('Remove Questions Functionality', () => {
+  test('should update page elements accordingly when questions are removed', async ({ questionAnswerTool }) => {
+
+    const questionAnswerPair = generateQuestionAnswerPair();
+
+    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
+
+    await expect.soft(questionAnswerTool.question).toHaveCount(1);
+    await expect.soft(questionAnswerTool.noQuestionsAlert).not.toBeAttached();
+
+    await questionAnswerTool.removeQuestions.click();
+
+    await expect.soft(questionAnswerTool.noQuestionsAlert).toHaveText('No questions yet :-(');
+    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find no questions. Feel free to create your own questions!');
+    await expect.soft(questionAnswerTool.sortQuestions).not.toBeAttached();
+    await expect.soft(questionAnswerTool.removeQuestions).not.toBeAttached();
+
+  });
+
+  test('should hide alert messages and corresponding elements when there is at least one question added', async ({ questionAnswerTool }) => {
+
+    const questionAnswerPair = generateQuestionAnswerPair();
+
+    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
+    await expect.soft(questionAnswerTool.question).toHaveCount(1);
+
+    await expect.soft(questionAnswerTool.noQuestionsAlert).not.toBeAttached();
+    await expect.soft(questionAnswerTool.sidebarMessage).not.toHaveText('no questions');
+    await expect.soft(questionAnswerTool.sortQuestions).toBeEnabled();
+    await expect.soft(questionAnswerTool.removeQuestions).toBeEnabled();
+  })
+})
+
+test.describe('Sidebar questions counter Functionality', () => {
+
+  test('should update sidebar text to reflect no questions present', async ({ questionAnswerTool }) => {
+    
+    await expect.soft(questionAnswerTool.noQuestionsAlert).toHaveText('No questions yet :-(');
+    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find no questions. Feel free to create your own questions!');
+  
+  });
+
+  test('should update sidebar to reflect only 1 qestions present', async ({ questionAnswerTool }) => {
+
+    const questionAnswerPair = generateQuestionAnswerPair();
+
+    await questionAnswerTool.add(questionAnswerPair.question, questionAnswerPair.answer);
+
+    await expect.soft(questionAnswerTool.question).toHaveCount(1);
+    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 1 question. Feel free to create your own questions!');
+
+  });
+
+  test('should update sidebar to reflect more than 100 qestions present', async ({ questionAnswerTool }) => {
+
+    const pairOf101 = generateMultipleQuestionAnswerPairs(101);
+    const randomPairNumber = Math.floor(Math.random() * pairOf101.length)
+    const randomPair = pairOf101[randomPairNumber]
+
+    // add 100 new questions on the The awesome Q/A tool one by one
+    for (let pair of pairOf101) {
+      await questionAnswerTool.add(pair.question, pair.answer)
+    }
+
+    await expect.soft(questionAnswerTool.question).toHaveCount(101);
+    await expect.soft(questionAnswerTool.sidebarMessage).toHaveText('Here you can find 101 questions. Feel free to create your own questions!');
+
+  });
+});

@@ -1,4 +1,5 @@
 const { expect } = require('@playwright/test');
+const { projects } = require('../../playwright.config');
 
 exports.QuestionAnswerToolPage = class QuestionAnswerToolPage {
 
@@ -9,9 +10,9 @@ exports.QuestionAnswerToolPage = class QuestionAnswerToolPage {
     this.page = page;
     this.pageTitle = page.locator('h1', { hasText: 'The awesome Q/A tool' });
     this.sidebarMessage = page.locator('[class = "sidebar"]');
-    this.questionsListTitle = page.locator('h2', { hasText: 'Created questions' });
+    this.questionsListTitle = page.getByRole('heading', { name: ("Created questions") });
     this.createAQuestionFormTitle = page.locator('h2', { hasText: 'Create a new question' });
-    this.questionsTooltip = page.locator('div.questions span');
+    this.questionsTooltip = page.locator('div.questions div.tooltipped-title span');
     this.createAQuestionTooltip = page.locator('div.question-maker span');
     this.inputQuestion = page.getByLabel('question');
     this.inputAnswer = page.getByLabel('answer');
@@ -38,5 +39,21 @@ exports.QuestionAnswerToolPage = class QuestionAnswerToolPage {
     await this.inputQuestion.fill(question);
     await this.inputAnswer.fill(answer);
     await this.submitQuestion.click();
+  }
+
+  async hover(text) {
+    //code smells, it's a workaround to cover hover over element not working in webkit
+    await this.page.evaluate((text) => {
+      const elements = document.querySelectorAll('div.tooltipped-title > h2');
+      for (let element of elements) {
+        if (element.textContent.includes(text)) {
+          element.dispatchEvent(new MouseEvent('mouseover', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true
+          }));
+        }
+      }
+    }, text);
   }
 }
