@@ -11,10 +11,10 @@
 
 ## Overview
 This test plan aims to ensure that all functionalities of the "The awesome Q/A tool" page are working as expected, including interactive elements and content display. Test cases provided include tests for UI and functional interactions.
-As a part of future updates and test coverage improvments, it might be relevant to add visual testing and accessibility checks. 
+As a part of future updates and test coverage improvements, it might be relevant to add visual testing and accessibility checks. 
 Out of scope: security testing, any test scenarios related to backend or integration with backend.
-In case the product will be updated, extened, backend part added, it would be required to build up and support a healthy test pyramid(unit, integration, system testing).  
-It is important to consider, there are no any known or presented acceptance criteria provided for the system under test. Therefore the plan aims to achieve a demonstration of exploratory testing strategy and deliverabals. As a result some behaviour might be falsely considered as defected or vice versa(which would be clairified in future discussions about the product). System under test: "The awesome Q/A tool" frontend page.
+In case the product will be updated, extended, backend part added, it would be required to build up and support a healthy test pyramid(unit, integration, system testing).  
+It is important to consider, there are no any known or presented acceptance criteria provided for the system under test. Therefore the plan aims to achieve a demonstration of exploratory testing strategy and deliverables. As a result some behaviour might be falsely considered as defected or vice versa(which would be clarified in future discussions about the product). System under test: "The awesome Q/A tool" frontend page.
 
 ### Test Environment
 * Browsers: Chrome, Firefox, Safari
@@ -75,8 +75,8 @@ Remove Questions Functionality | Should hide alert messages and corresponding el
 
 ```
 Sidebar questions counter | Should update sidebar text to reflect no questions present
-Sidebar questions counter | Should update sidebar to reflect only 1 qestions present
-Sidebar questions counter | Should update sidebar to reflect more than 100 qestions present
+Sidebar questions counter | Should update sidebar to reflect only 1 questions present
+Sidebar questions counter | Should update sidebar to reflect more than 100 questions present
 ```
 
 
@@ -89,32 +89,32 @@ To implement test automation of the test cases above a following tech stack was 
 
 ### How to
 
-Before proceeding with the runing tests you should make sure you have [Git](https://git-scm.com/downloads) and [NodeJs](https://nodejs.org/en/) installed on your machine
-Once ready run the following code snippet line by line using your favorite terminal
+Before proceeding with the running tests you should make sure you have [Git](https://git-scm.com/downloads) and [NodeJs](https://nodejs.org/en/) installed on your machine
+Once ready run the following code snippet line by line using your favourite terminal
 ```sh
 git clone https://github.com/otdrc/qa-engineer-assignment.git
 cd qa-engineer-assignment
 npm i
 npx playwright install
 ```
-#### Out of the box test cases are configured to run headless meaning no browser will open it's interface. To change this behavior please modify `playwright.config.js` in accordance to your needs.
+#### Out of the box test cases are configured to run headless meaning no browser will open its interface. To change this behaviour please modify `playwright.config.js` in accordance to your needs.
 
 >To proceed with tests run
 ```
 npm run test
 ```
 
-###### For additional ways of running tests please consult the [Playwrigth test-cli](https://playwright.dev/docs/test-cli/) documentation
+###### For additional ways of running tests please consult the [Playwright test-cli](https://playwright.dev/docs/test-cli/) documentation
 
 After the test run the test results are produced in accordance to `playwright.config.js` setup. You can find test results under `playwright-report` folder. 
 
 ### Test runner configuration
-Playwright uses it's own config to define a behavior of the test run. You can find it within the `playwright.config.js` file in the `frontend-app-tests` folder. For more details on how it works please visit [Playwright Configuration](https://playwright.dev/docs/test-configuration) page
+Playwright uses it's own config to define a behaviour of the test run. You can find it within the `playwright.config.js` file in the `frontend-app-tests` folder. For more details on how it works please visit [Playwright Configuration](https://playwright.dev/docs/test-configuration) page
 
 
 
 ### Known issues and things to improve
-- Potenial defect: question with whitespace input only could be created which results in empty questions
-- Potenial defect: questions sorting with open answers keeps open answers by the position in the Dom rather, questions which answers were open before sorting are closed instead.
-- Potenial defect: duplicated questions with duplicated answers could be created, even though there are no any acceptance criteria or requirements to invalidate the behaviour, in might worth looking into and redefine the expected behaviour
-- Code smeels: Locator.hover() over element in webkit didn't provide expected behaviour, so, as a result a workaround has been implemented to cover all devices. Might require further investigation in playwright known issues or behaviour specifics in webkit broswer type. 
+- Potential defect: question with whitespace input only could be created which results in empty questions
+- Potential defect: questions sorting with open answers keeps open answers by the position in the Dom rather, questions which answers were open before sorting are closed instead.
+- Potential defect: duplicated questions with duplicated answers could be created, even though there are no any acceptance criteria or requirements to invalidate the behaviour, in might worth looking into and redefine the expected behaviour
+- Code smells: Locator.hover() over element in webkit didn't provide expected behaviour, so, as a result a workaround has been implemented to cover all devices. Might require further investigation in playwright known issues or behaviour specifics in webkit browser type. 
